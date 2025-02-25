@@ -1,0 +1,60 @@
+{% load static %} <!-- Load the static template tag library -->
+
+<section class="blog-section">
+  <div class="container">
+    <div class="row g-4">
+      {% for obj in object_list %}
+        <div class="col-md-6 col-lg-4">
+          <div class="blog-card">
+            <!-- Blog Image -->
+            <div class="blog-image">
+              <a href="{% url 'main:blog' slug=obj.slug %}">
+                {% if obj.image %} <!-- Check if the image field is not empty -->
+                  <img src="{{ obj.image.url }}" alt="{{ obj.name }}" class="img-fluid">
+                {% else %}
+                  <img src="{% static 'images/default_blog_image.png' %}" alt="Default Blog Image" class="img-fluid">
+                {% endif %}
+              </a>
+            </div>
+
+            <!-- Blog Content -->
+            <div class="blog-content">
+              <h3 class="blog-title">
+                <a href="{% url 'main:blog' slug=obj.slug %}">{{ obj.name }}</a>
+              </h3>
+              <p class="blog-excerpt">{{ obj.excerpt|truncatechars:120 }}</p>
+              <div class="blog-meta">
+                <span class="blog-date">{{ obj.created_at|date:"F d, Y" }}</span>
+                <span class="blog-author">
+                  by <a href="{{ obj.author_social_profile }}" target="_blank">{{ obj.author }}</a>
+                </span>
+              </div>
+
+              <!-- Social Media Sharing Buttons -->
+              <div class="social-sharing mt-3">
+                <span>Share:</span>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="social-icon">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ obj.name }}" target="_blank" class="social-icon">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/shareArticle?url={{ request.build_absolute_uri }}&title={{ obj.name }}" target="_blank" class="social-icon">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://wa.me/?text={{ obj.name }} - {{ request.build_absolute_uri }}" target="_blank" class="social-icon">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <!-- If there are no blog posts, display a message -->
+        <div class="col-12 text-center">
+          <p class="text-muted">No blog posts available.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
